@@ -1,0 +1,9 @@
+name: discrod
+version: 0.1.0
+
+authors:
+  - voximity <voximity@gmail.com>
+
+crystal: 0.34.0
+
+license: MIT
