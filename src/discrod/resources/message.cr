@@ -62,4 +62,29 @@ module Discrod
             client.delete_all_reactions_for_emoji(channel_id, id, emoji)
         end
     end
+
+    struct ReactionEvent
+        include JSON::Serializable
+
+        getter user_id : Snowflake
+        getter channel_id : Snowflake
+        getter message_id : Snowflake
+        getter guild_id : Snowflake?
+        getter member : Member?
+        @emoji : PartialEmoji
+
+        def emoji
+            @emoji.emoji
+        end
+
+        def channel(client : Client? = nil)
+            client ||= Discrod.client
+            client.channel_cache!.get!(channel_id)
+        end
+
+        def guild(client : Client? = nil)
+            client ||= Discrod.client
+            client.guild_cache!.get!(guild_id.not_nil!)
+        end
+    end
 end

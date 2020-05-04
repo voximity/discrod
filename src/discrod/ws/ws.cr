@@ -130,8 +130,17 @@ module Discrod::WS
                     when "MESSAGE_UPDATE"
                         @client.fire_message_update(Packet(Message).from_json(message).payload)
                     when "MESSAGE_DELETE"
+                        deletion = Packet(MessageRemovePayload).from_json(message).payload
+                        guild = deletion.guild_id.try { |id| @client.guild_cache.try &.get(id) }
+                        channel = @client.channel_cache.try &.get(deletion.channel_id)
+                        @client.fire_message_delete(deletion.id, channel, guild)
                     when "MESSAGE_DELETE_BULK"
+                        deletion = Packet(MessageBulkRemovePayload).from_json(message).payload
+                        guild = deletion.guild_id.try { |id| @client.guild_cache.try &.get(id) }
+                        channel = @client.channel_cache.try &.get(deletion.channel_id)
+                        @client.fire_message_delete(deletion.ids, channel, guild)
                     when "MESSAGE_REACTION_ADD"
+                        @client.fire_message_reaction_add(Packet(ReactionEvent).from_json(message).payload)
                     when "MESSAGE_REACTION_REMOVE"
                     when "MESSAGE_REACTION_REMOVE_ALL"
                     when "MESSAGE_REACTION_REMOVE_EMOJI"

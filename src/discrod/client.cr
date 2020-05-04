@@ -429,5 +429,21 @@ module Discrod
         #
         # https://discordapp.com/developers/docs/topics/gateway#message-update
         event message_update, Message
+
+        # This event is fired when a message is deleted.
+        #
+        # https://discordapp.com/developers/docs/topics/gateway#message-delete
+        event message_delete, Snowflake, Channel?, Guild?
+
+        # This event is fired when messages are bulk deleted.
+        #
+        # https://discordapp.com/developers/docs/topics/gateway#message-delete-bulk
+        event message_delete_bulk, Array(Snowflake), Channel?, Guild?
+
+        # This event is fired when a user reacts to a message.
+        # The parameter type is a `ReactionEvent`.
+        #
+        # https://discordapp.com/developers/docs/topics/gateway#message-reaction-add
+        event message_reaction_add, ReactionEvent
     end
 end
