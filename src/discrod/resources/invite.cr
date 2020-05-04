@@ -1,4 +1,5 @@
-module Discrod
+module Discrod::Resources
+    # A user-created invite resource.
     struct Invite
         include JSON::Serializable
 
@@ -19,6 +20,7 @@ module Discrod
         end
     end
 
+    # A deleted invite.
     struct DeletedInvite
         include JSON::Serializable
 

@@ -1,4 +1,4 @@
-module Discrod
+module Discrod::Resources
     EMBED_TITLE_MAX = 256
     EMBED_DESCRIPTION_MAX = 2048
     EMBED_FIELD_MAX = 25
@@ -8,9 +8,23 @@ module Discrod
     EMBED_AUTHOR_MAX = 256
     EMBED_GENERAL_MAX = 6000
 
+    # An exception that is thrown when an `EmbedBuilder` attempts to build an embed that has
+    # one or more properties that exceed Discord's limits on embed text.
     class EmbedLimitException < Exception
     end
 
+    # An embed builder. Use like:
+    # ```
+    # builder = Discrod::EmbedBuilder.new do |e|
+    #   e.with_title "Embed title"
+    #   e.with_description "Embed description"
+    #   e.with_url "https://github.com/voximity/discrod"
+    #   e.with_time Time.utc
+    #   # ... 
+    # end
+    # 
+    # embed = builder.build
+    # ```
     class EmbedBuilder
         getter title : String?
         def with_title(@title : String?)

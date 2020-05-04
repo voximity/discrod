@@ -1,4 +1,4 @@
-module Discrod
+module Discrod::Resources
     class Role
         include JSON::Serializable
 

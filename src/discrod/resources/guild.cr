@@ -1,4 +1,5 @@
-module Discrod
+module Discrod::Resources
+    # The verification level for a server.
     enum VerificationLevel
         # No restrictions on verification.
         None
@@ -16,28 +17,33 @@ module Discrod
         VeryHigh
     end
 
+    # The default setting for message notifications on a server.
     enum DefaultMessageNotifications
         AllMessages
         OnlyMentions
     end
 
+    # The explicit content filter for a server.
     enum ExplicitContentFilter
         Disabled
         MembersWithoutRoles
         AllMembers
     end
 
+    # The MFA level in place on a server.
     enum MFALevel
         None
         Elevated
     end
 
+    # Settings for a server's system channel.
     @[Flags]
     enum SystemChannelFlags : Int64
         SuppressJoinNotifications = 1 << 0
         SuppressPremiumSubscriptions = 1 << 1
     end
 
+    # The Nitro boost tier of a server.
     enum GuildPremiumTier
         None
         Tier1
@@ -45,6 +51,7 @@ module Discrod
         Tier3
     end
 
+    # A guild resource. See [Discord's API](https://discordapp.com/developers/docs/resources/guild) for more information.
     class Guild
         include JSON::Serializable
 
@@ -95,6 +102,7 @@ module Discrod
         getter approximate_presence_count : Int32?
     end
 
+    # An unavailable guild. Acts as a wrapper for an `id` and `unavailable` field.
     class UnavailableGuild
         include JSON::Serializable
 

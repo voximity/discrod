@@ -1,4 +1,4 @@
-module Discrod
+module Discrod::Resources
     @[Flags]
     enum UserFlags : Int64
         DiscordEmployee      = 1 << 0

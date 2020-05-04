@@ -121,6 +121,7 @@ module Discrod
             # payload_json,
             # allowed_mentions
         ) : Message
+            raise "content or embed is required for creating a message" if content.nil? && embed.nil?
             body = @route_client.post Route.new("/channels/#{channel_id.to_s}/messages"), MessageCreatePayload.new(
                 content: content,
                 nonce: nonce,

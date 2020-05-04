@@ -1,4 +1,4 @@
-module Discrod
+module Discrod::Resources
     struct MessageCreatePayload
         include JSON::Serializable
 
