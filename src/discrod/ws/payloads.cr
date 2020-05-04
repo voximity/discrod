@@ -6,6 +6,32 @@ module Discrod::WS
         Etf
     end
 
+    enum GatewayClose
+        UnknownError         = 4000
+        UnknownOpcode        = 4001
+        DecodeError          = 4002
+        NotAuthenticated     = 4003
+        AuthenticationFailed = 4004
+        AlreadyAuthenticated = 4005
+        InvalidSequence      = 4007
+        RateLimited          = 4008
+        SessionTimedOut      = 4009
+        InvalidShard         = 4010
+        ShardingRequired     = 4011
+        InvalidApiVersion    = 4012
+        InvalidIntents       = 4013
+        DisallowedIntents    = 4014
+    end
+
+    class GatewayCloseException < Exception
+        def initialize(@code : GatewayClose)
+        end
+
+        def message
+            "The gateway closed with code #{@code.value}: #{@code}"
+        end
+    end
+
     struct ShardPair
         getter shard_id : Int64
         getter shard_count : Int64
@@ -79,6 +105,58 @@ module Discrod::WS
             user: User,
             session_id: String,
             shard: ShardPair?
+        )
+    end
+
+    struct ResumePayload
+        JSON.mapping(
+            token: String,
+            session_id: String,
+            seq: Int32?
+        )
+
+        def initialize(@token : String, @session_id : String, @seq : Int32?)
+        end
+    end
+
+    struct GuildBanPayload
+        include JSON::Serializable
+
+        getter guild_id : Snowflake
+        getter user : User
+    end
+
+    struct GuildEmojisUpdatePayload
+        include JSON::Serializable
+
+        getter guild_id : Snowflake
+        getter emojis : Array(GuildEmoji)
+    end
+
+    struct GuildIntegrationsUpdatePayload
+        JSON.mapping(
+            guild_id : Snowflake
+        )
+    end
+
+    struct GuildMemberRemovePayload
+        JSON.mapping(
+            guild_id : Snowflake,
+            user : User
+        )
+    end
+
+    struct GuildRolePayload
+        JSON.mapping(
+            guild_id: Snowflake,
+            role: Role
+        )
+    end
+
+    struct GuildRoleRemovePayload
+        JSON.mapping(
+            guild_id: Snowflake,
+            role_id: Snowflake
         )
     end
 end

@@ -5,7 +5,7 @@ module Discrod::WS
         include JSON::Serializable
 
         # The opcode of the packet.
-        getter op : Int32
+        getter op : Opcode
         
         # The sequence number. Valid in resumes/heartbeats.
         getter s : Int32?

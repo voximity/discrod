@@ -1,15 +1,15 @@
 module Discrod
     class Message
-        JSON.mapping(
-            id: Snowflake,
-            channel_id: Snowflake,
-            guild_id: Snowflake?,
-            author: User,
-            # member,
-            content: String,
-            timestamp: Time,
-            edited_timestamp: Time?,
-            # todo: finish
-        )
+        include JSON::Serializable
+
+        getter id : Snowflake
+        getter channel_id : Snowflake
+        getter guild_id : Snowflake?
+        getter author : User
+        # member
+        getter content : String
+        getter timestamp : Time
+        getter edited_timestamp : Time?
+        # todo: finish
     end
 end

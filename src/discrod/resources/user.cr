@@ -16,27 +16,27 @@ module Discrod
         VerifiedBotDeveloper = 1 << 17
     end
 
-    enum PremiumType
+    enum UserPremiumType
         None
         NitroClassic
         Nitro
     end
 
     class User
-        JSON.mapping(
-            id: Snowflake,
-            username: String,
-            discriminator: String,
-            avatar: String?,
-            bot: Bool?,
-            system: Bool?,
-            mfa_enabled: Bool?,
-            locale: String?,
-            verified: Bool?,
-            email: String?,
-            flags: UserFlags?,
-            premium_type: PremiumType?,
-            public_flags: UserFlags?
-        )
+        include JSON::Serializable
+
+        getter id : Snowflake
+        getter username : String
+        getter discriminator : String
+        getter avatar : String?
+        getter bot : Bool?
+        getter system : Bool?
+        getter mfa_enabled : Bool?
+        getter locale : String?
+        getter verified : Bool?
+        getter email : String?
+        getter flags : UserFlags?
+        getter premium_type : UserPremiumType?
+        getter public_Flags : UserFlags?
     end
 end
