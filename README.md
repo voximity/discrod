@@ -26,7 +26,7 @@ client = Discrod::Client.new token: "my-token", token_type: Discrod::TokenType::
 client.on_message_create do |message|
     if message.content == "ping"
         message.react Discrod::Emoji.new ":confetti_ball:"
-        message.channel.create_message content: "Pong!"
+        message.channel.create_message embed: Discrod::EmbedBuilder.new { |e| e.with_title "Pong!"; e.with_description "discrod speaking here!" }.build
     end
 end
 
