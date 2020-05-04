@@ -88,7 +88,7 @@ module Discrod::WS
                         @client.fire_guild_integrations_update(@client.guild_cache.try &.get(payload.guild_id))
                     when "GUILD_MEMBER_ADD"
                         member = Packet(Member).from_json(message).payload
-                        guild = @client.guild_cache.try &.get(member.guild_id)
+                        guild = member.guild_id.try { |id| @client.guild_cache.try &.get(id) }
                         @client.fire_guild_member_add(member, guild)
                     when "GUILD_MEMBER_UPDATE"
                         member_update = Packet(MemberUpdate).from_json(message).payload
@@ -97,7 +97,7 @@ module Discrod::WS
                     when "GUILD_MEMBER_REMOVE"
                         payload = Packet(GuildMemberRemovePayload).from_json(message).payload
                         guild = @client.guild_cache.try &.get(payload.guild_id)
-                        @client.fire_guild_member_add(payload.user, guild)
+                        @client.fire_guild_member_remove(payload.user, guild)
                     # when "GUILD_MEMBERS_CHUNK"
                     when "GUILD_ROLE_CREATE"
                         payload = Packet(GuildRolePayload).from_json(message).payload

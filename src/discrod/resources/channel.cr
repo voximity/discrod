@@ -47,6 +47,29 @@ module Discrod
 
         getter id : Snowflake
         getter type : ChannelType
+
+        def delete(client : Client? = nil)
+            client ||= Discrod.client
+            client.delete_channel(id)
+        end
+
+        def create_message(
+            content : String? = nil,
+            nonce : String | Int32 | Nil = nil,
+            tts : Bool? = nil,
+            client : Client? = nil
+            # embed,
+            # payload_json,
+            # allowed_mentions
+        ) : Message
+            client ||= Discrod.client
+            client.create_message(id, content: content, nonce: nonce, tts: tts)
+        end
+
+        def get_message(message_id : Snowflake, client : Client? = nil)
+            client ||= Discrod.client
+            client.get_channel_message(id, message_id)
+        end
     end
 
     class DirectMessageChannel < Channel
@@ -62,6 +85,11 @@ module Discrod
         getter position : Int32
         getter permission_overwrites : Array(PermissionOverwrite)
         getter name : String
+
+        def guild(client : Client? = nil)
+            client ||= Discrod.client
+            client.guild_cache!.get!(guild_id)
+        end
     end
     
     class TextChannel < GuildChannel

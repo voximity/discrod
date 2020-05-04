@@ -135,14 +135,14 @@ module Discrod::WS
 
     struct GuildIntegrationsUpdatePayload
         JSON.mapping(
-            guild_id : Snowflake
+            guild_id: Snowflake
         )
     end
 
     struct GuildMemberRemovePayload
         JSON.mapping(
-            guild_id : Snowflake,
-            user : User
+            guild_id: Snowflake,
+            user: User
         )
     end
 

@@ -64,9 +64,9 @@ module Discrod
         getter verification_level : VerificationLevel
         getter default_message_notifications : DefaultMessageNotifications
         getter explicit_content_filter : ExplicitContentFilter
-        getter roles : Array(Role) = [] of Role
-        getter emojis : Array(Emoji) = [] of GuildEmoji
+        getter emojis : Array(GuildEmoji) = [] of Discrod::GuildEmoji
         getter features : Array(String) = [] of String
+        getter roles : Array(Role) = [] of Discrod::Role
         getter mfa_level : MFALevel
         getter application_id : Snowflake?
         getter widget_enabled : Bool?
@@ -93,20 +93,6 @@ module Discrod
         getter public_updates_channel_id : Snowflake?
         getter approximate_member_count : Int32?
         getter approximate_presence_count : Int32?
-    end
-
-    struct GuildEmoji
-        include JSON::Serializable
-
-        getter id : Snowflake
-        getter name : String
-        @[JSON::Field(key: "roles")]
-        getter role_ids : Array(Snowflake)?
-        getter user : User?
-        getter require_colons : Bool?
-        getter managed : Bool?
-        getter animated : Bool?
-        getter available : Bool?
     end
 
     class UnavailableGuild

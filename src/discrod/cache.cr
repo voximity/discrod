@@ -12,6 +12,14 @@ module Discrod
             get(Snowflake.new(id))
         end
 
+        def get!(id : Snowflake) : T
+            map[id]? || resolve(id).not_nil!
+        end
+
+        def get!(id : UInt64 | String) : T
+            get!(Snowflake.new(id))
+        end
+
         def <<(resource : T)
             if resource.responds_to?(:id)
                 map[resource.id] = resource
@@ -40,7 +48,7 @@ module Discrod
     end
 
     class ChannelCache < Cache(Channel)
-        def resolve(id : Channel) : Channel?
+        def resolve(id : Snowflake) : Channel?
             map[id] = @client.get_channel(id)
             map[id]?
         end

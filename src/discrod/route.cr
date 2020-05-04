@@ -1,5 +1,5 @@
 module Discrod
-    DISCORD_URL = "www.discordapp.com"
+    DISCORD_URL = "discordapp.com"
     DISCORD_API_VERSION = "v6"
 
     class RouteException < Exception
@@ -12,9 +12,12 @@ module Discrod
     end
 
     class RouteClient
+        alias FormValue = Nil | Bool | Int64 | Float64 | String | Array(FormValue) | Form
+        alias Form = Hash(String, FormValue)
+
         def initialize(@authorization : String)
-            @http = HTTP::Client.new "www.discordapp.com", tls: true
-            @http.before_request &.headers["Authorization"] = @authorization
+            @http = HTTP::Client.new DISCORD_URL, tls: true
+            @http.before_request { |r| r.headers["Authorization"] = @authorization }
         end
 
         def get(route : Route)
@@ -23,8 +26,26 @@ module Discrod
             response.body
         end
 
-        def post(route : Route, form : JSON::Any)
+        def post(route : Route, form : Form)
             response = @http.post(route.path, headers: HTTP::Headers{"Content-Type" => "application/json"}, body: form.to_json)
+            raise RouteException.new(response.status) unless response.success?
+            response.body
+        end
+
+        def patch(route : Route, form : Form)
+            response = @http.patch(route.path, headers: HTTP::Headers{"Content-Type" => "application/json"}, body: form.to_json)
+            raise RouteException.new(response.status) unless response.success?
+            response.body
+        end
+
+        def put(route : Route, form : Form? = nil)
+            response = @http.put(route.path, headers: HTTP::Headers{"Content-Type" => "application/json"}, body: form || "")
+            raise RouteException.new(response.status) unless response.success?
+            response.body
+        end
+
+        def delete(route : Route)
+            response = @http.delete(route.path)
             raise RouteException.new(response.status) unless response.success?
             response.body
         end
@@ -33,7 +54,7 @@ module Discrod
     # Represents a route to Discord's API.
     struct Route
         def path
-            "#{@base}/#{@endpoint}"
+            "#{@base}#{@endpoint}"
         end
 
         def initialize(@endpoint : String, @base : String = "/api/#{DISCORD_API_VERSION}")

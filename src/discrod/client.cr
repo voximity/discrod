@@ -1,6 +1,17 @@
 module Discrod
     extend self
 
+    @@client : Client? = nil
+
+    def client : Client
+        return @@client.not_nil! unless @@client.nil?
+        raise "a Client has not yet been instantiated, so operations may not be performed on resources."
+    end
+
+    def client=(client : Client)
+        @@client = client
+    end
+
     def log
         ::Log.for("discrod")
     end
@@ -17,10 +28,18 @@ module Discrod
         getter token
         getter token_type
 
-        getter guild_cache : GuildCache?
-        getter channel_cache : ChannelCache?
-        getter user_cache : UserCache?
-        getter role_cache : RoleCache?
+        macro cache(cache_name, cache_type)
+            getter {{cache_name}}_cache : {{cache_type}}?
+            def {{cache_name}}_cache! : {{cache_type}}
+                return {{cache_name}}_cache.not_nil! unless {{cache_name}}_cache.nil?
+                raise "no cache exists, making this resolution invalid"
+            end
+        end
+
+        cache guild, GuildCache
+        cache channel, ChannelCache
+        cache user, UserCache
+        cache role, RoleCache
 
         getter route_client : RouteClient
 
@@ -35,6 +54,8 @@ module Discrod
                 @user_cache = UserCache.new(self)
                 @role_cache = RoleCache.new(self)
             end
+
+            Discrod.client = self
         end
 
         def authorization
@@ -49,9 +70,72 @@ module Discrod
         # REST events
 
         # Gets a guild from Discord's API, skipping the cache. Use the cache to get guilds if you do not wish to request the API.
-        def get_guild(id : Snowflake)
-            body = @route_client.get Route.new "guilds" + "#{id.value}"
+        def get_guild(id : Snowflake | UInt64) : Guild
+            body = @route_client.get Route.new "/guilds/#{id.to_s}"
             Guild.from_json body
+        end
+
+        # Gets a channel from Discord's API, skipping the cache. Use the cache to get channels if you do not wish to request the API.
+        #
+        # https://discordapp.com/developers/docs/resources/channel#get-channel
+        def get_channel(id : Snowflake | UInt64) : Channel
+            body = @route_client.get Route.new "/channels/#{id.to_s}"
+            Channel.from_json body
+        end
+
+        # Modify channel
+
+        # Deletes a channel.
+        #
+        # https://discordapp.com/developers/docs/resources/channel#deleteclose-channel
+        def delete_channel(id : Snowflake | UInt64)
+            @route_client.delete Route.new "/channels/#{id.to_s}"
+        end
+
+        # Get Channel Messages
+
+        # Gets a message from a channel.
+        #
+        # https://discordapp.com/developers/docs/resources/channel#get-channel-message
+        def get_channel_message(channel_id : Snowflake | UInt64, message_id : Snowflake | UInt64) : Message
+            Message.from_json @route_client.get Route.new "/channels/#{channel_id.to_s}/messages/#{message_id.to_s}"
+        end
+
+        # Creates a message in a channel.
+        #
+        # https://discordapp.com/developers/docs/resources/channel#create-message
+        def create_message(
+            channel_id : Snowflake | UInt64,
+            content : String? = nil,
+            nonce : String | Int32 | Nil = nil,
+            tts : Bool? = nil
+            # embed,
+            # payload_json,
+            # allowed_mentions
+        ) : Message
+            body = @route_client.post Route.new("/channels/#{channel_id.to_s}/messages"), {
+                "content" => content,
+                "nonce" => nonce,
+                "tts" => tts
+            }
+            Message.from_json body
+        end
+
+        # Creates a reaction on a message.
+        #
+        # https://discordapp.com/developers/docs/resources/channel#create-reaction
+        def create_reaction(
+            channel_id : Snowflake | UInt64,
+            message_id : Snowflake | UInt64,
+            emoji : AbstractEmoji
+        )
+            @route_client.put Route.new("/channels/#{channel_id.to_s}/messages/#{message_id.to_s}/reactions/#{URI.encode emoji.to_s}/@me")
+        end
+
+        # Gets a user from Discord's API, skipping the cache. Use the cache to get channels if you do not wish to request the API.
+        def get_user(id : Snowflake | UInt64)
+            body = @route_client.get Route.new "users" + "#{id.to_s}"
+            User.from_json body
         end
 
         # :nodoc:
@@ -177,5 +261,10 @@ module Discrod
         #
         # https://discordapp.com/developers/docs/topics/gateway#message-create
         event message_create, Message
+
+        # This event is fired when a message updates.
+        #
+        # https://discordapp.com/developers/docs/topics/gateway#message-update
+        event message_update, Message
     end
 end
