@@ -38,5 +38,10 @@ module Discrod
         getter flags : UserFlags?
         getter premium_type : UserPremiumType?
         getter public_Flags : UserFlags?
+
+        def avatar_url
+            return "https://cdn.discordapp.com/embed/avatars/#{@discriminator.to_i % 5}.png" if avatar.nil?
+            "https://cdn.discordapp.com/avatars/#{id.to_s}/#{@avatar}.png"
+        end
     end
 end

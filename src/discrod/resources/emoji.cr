@@ -9,7 +9,7 @@ module Discrod
         def initialize(@emoji : String)
         end
 
-        def to_s
+        def to_s : String
             ::Emoji.emojize @emoji
         end
     end
@@ -27,7 +27,7 @@ module Discrod
         getter animated : Bool?
         getter available : Bool?
 
-        def to_s
+        def to_s : String
             @id.to_s
         end
     end

@@ -9,6 +9,10 @@ module Discrod
 
         property value
 
+        def self.new(snowflake : Snowflake)
+            snowflake
+        end
+
         def self.new(value : String)
             new(value.to_u64)
         end

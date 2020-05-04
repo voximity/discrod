@@ -14,6 +14,12 @@ module Discrod
         Member
     end
 
+    enum SnowflakeDirection
+        Around
+        Before
+        After
+    end
+
     struct PermissionOverwrite
         include JSON::Serializable
 
@@ -30,8 +36,13 @@ module Discrod
             return PermissionOverwriteType::Member if type == "member"
             raise "Invalid permission overwrite type"
         end
+
+        def initialize(id : Snowflake | UInt64, type : PermissionOverwriteType, @allow : Permissions = Permissions::None, @deny : Permissions = Permissions::None)
+            @id = Snowflake.new(id)
+            @type = type.to_s.downcase
+        end
     end
-    
+
     class Channel
         include JSON::Serializable
 
@@ -57,13 +68,18 @@ module Discrod
             content : String? = nil,
             nonce : String | Int32 | Nil = nil,
             tts : Bool? = nil,
-            client : Client? = nil
-            # embed,
+            client : Client? = nil,
+            embed : Embed? = nil
             # payload_json,
             # allowed_mentions
         ) : Message
             client ||= Discrod.client
-            client.create_message(id, content: content, nonce: nonce, tts: tts)
+            client.create_message(id, content: content, nonce: nonce, tts: tts, embed: embed)
+        end
+
+        def get_messages(message_id : Snowflake, direction : SnowflakeDirection, limit : Int32 = 50, client : Client? = nil) : Array(Message)
+            client ||= Discrod.client
+            client.get_channel_messages(id, message_id, direction, limit)
         end
 
         def get_message(message_id : Snowflake, client : Client? = nil)

@@ -9,6 +9,7 @@ require "uri"
 require "./json_serialization_patch.cr"
 
 require "./discrod/resources/channel.cr"
+require "./discrod/resources/embed.cr"
 require "./discrod/resources/emoji.cr"
 require "./discrod/resources/guild.cr"
 require "./discrod/resources/invite.cr"

@@ -13,7 +13,13 @@ module Discrod
 
     class RouteClient
         alias FormValue = Nil | Bool | Int64 | Float64 | String | Array(FormValue) | Form
-        alias Form = Hash(String, FormValue)
+        alias Form = Hash(String, FormValue) | String
+
+        def simplify_form(form : Form)
+            return "" if form.nil?
+            return form if form.is_a?(String)
+            form.to_json
+        end
 
         def initialize(@authorization : String)
             @http = HTTP::Client.new DISCORD_URL, tls: true
@@ -26,20 +32,20 @@ module Discrod
             response.body
         end
 
-        def post(route : Route, form : Form)
-            response = @http.post(route.path, headers: HTTP::Headers{"Content-Type" => "application/json"}, body: form.to_json)
+        def post(route : Route, form : Form? = nil)
+            response = @http.post(route.path, headers: HTTP::Headers{"Content-Type" => "application/json"}, body: simplify_form(form))
             raise RouteException.new(response.status) unless response.success?
             response.body
         end
 
-        def patch(route : Route, form : Form)
-            response = @http.patch(route.path, headers: HTTP::Headers{"Content-Type" => "application/json"}, body: form.to_json)
+        def patch(route : Route, form : Form? = nil)
+            response = @http.patch(route.path, headers: HTTP::Headers{"Content-Type" => "application/json"}, body: simplify_form(form))
             raise RouteException.new(response.status) unless response.success?
             response.body
         end
 
         def put(route : Route, form : Form? = nil)
-            response = @http.put(route.path, headers: HTTP::Headers{"Content-Type" => "application/json"}, body: form || "")
+            response = @http.put(route.path, headers: HTTP::Headers{"Content-Type" => "application/json"}, body: simplify_form(form))
             raise RouteException.new(response.status) unless response.success?
             response.body
         end
