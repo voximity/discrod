@@ -3,11 +3,13 @@ module Discrod
 
     @@client : Client? = nil
 
+    # The default `Client` of the module.
     def client : Client
         return @@client.not_nil! unless @@client.nil?
         raise "a Client has not yet been instantiated, so operations may not be performed on resources."
     end
 
+    # Sets the default `Client` of the module.
     def client=(client : Client)
         @@client = client
     end
@@ -22,6 +24,7 @@ module Discrod
         Bearer
     end
 
+    # A `Client`. Responsible for handling WebSocket interactions (see `Discrod::WS::WebSocket`) and REST interactions.
     class Client
         @web_socket : WS::WebSocket?
 
@@ -304,17 +307,32 @@ module Discrod
 
         # :nodoc:
         macro event(name, *params)
-            def on_{{name}}(&block : {{*params}} ->)
-                @{{name}}_listeners << block
+            {% listener_name = name.id.split("_").map(&.capitalize).join("").id %}
+            def on_{{name}}(&block : {{*params}} ->) : Event{{listener_name}}Listener
+                listener = Event{{listener_name}}Listener.new(block)
+                @{{name}}_listeners << listener
+                listener
             end
             protected def fire_{{name}}(*args)
                 @{{name}}_listeners.try &.each &.call(*args)
             end
-            {% if params.size == 0 %}
-                @{{name}}_listeners : Array(Proc(Nil)) = [] of Proc(Nil)
-            {% else %}
-                @{{name}}_listeners : Array(Proc({{*params}}, Nil)) = [] of Proc({{*params}}, Nil)
-            {% end %}
+            # :nodoc:
+            struct Event{{listener_name}}Listener
+                {% if params.size == 0 %}
+                    getter proc : Proc(Nil)
+                {% else %}
+                    getter proc : Proc({{*params}}, Nil)
+                {% end %}
+                def call(*args)
+                    @proc.call(*args)
+                end
+                def destroy
+                    @{{name}}_listeners.delete(self)
+                end
+                def initialize(@proc)
+                end
+            end
+            @{{name}}_listeners : Array(Event{{listener_name}}Listener) = [] of Event{{listener_name}}Listener
         end
 
         # This event is fired when the client successfully connects to the gateway
@@ -446,5 +464,21 @@ module Discrod
         #
         # https://discordapp.com/developers/docs/topics/gateway#message-reaction-add
         event message_reaction_add, ReactionEvent
+
+        # This event is fired when a user removes a reaction from a message.
+        # The parameter type is a `ReactionEvent`. The `member` field is not available in this event.
+        #
+        # https://discordapp.com/developers/docs/topics/gateway#message-reaction-add
+        event message_reaction_remove, ReactionEvent
+
+        # This event is fired when all reactions are removed from a message.
+        #
+        # https://discord.com/developers/docs/topics/gateway#message-reaction-remove-all
+        event message_reaction_remove_all, Snowflake, Channel?, Guild?
+
+        # This event is fired when a user removes all reactions of a certain emoji.
+        #
+        # https://discord.com/developers/docs/topics/gateway#message-reaction-remove-emoji
+        event message_reaction_remove_emoji, AbstractEmoji, Snowflake, Channel?, Guild?
     end
 end

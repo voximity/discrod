@@ -175,4 +175,12 @@ module Discrod::WS
             guild_id: Snowflake?
         )
     end
+
+    struct ReactionRemoveAllPayload
+        JSON.mapping(
+            channel_id: Snowflake,
+            message_id: Snowflake,
+            guild_id: Snowflake?
+        )
+    end
 end

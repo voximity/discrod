@@ -15,7 +15,7 @@ module Discrod
         alias FormValue = Nil | Bool | Int64 | Float64 | String | Array(FormValue) | Form
         alias Form = Hash(String, FormValue) | String
 
-        def simplify_form(form : Form)
+        def simplify_form(form : Form?)
             return "" if form.nil?
             return form if form.is_a?(String)
             form.to_json
