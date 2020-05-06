@@ -85,7 +85,7 @@ module Discrod::Resources
         getter large : Bool?
         getter unavailable : Bool?
         getter member_count : Int32?
-        # getter voice_state : Array(VoiceState) = [] of VoiceState
+        getter voice_states : Array(VoiceState) = [] of Discrod::VoiceState
         # getter members : Array(Member) = [] of Member
         getter channels : Array(GuildChannel) = [] of Discrod::GuildChannel
         # getter presences : Array(PresenceUpdate) = [] of PresenceUpdate
@@ -100,6 +100,15 @@ module Discrod::Resources
         getter public_updates_channel_id : Snowflake?
         getter approximate_member_count : UInt32?
         getter approximate_presence_count : UInt32?
+
+        protected def voice_state_of(id : Snowflake) : VoiceState?
+            voice_states.find { |state| state.user_id == id }
+        end
+
+        protected def update_voice_state_of(id : Snowflake, new_state : VoiceState)
+            voice_states.reject { |state| state.user_id == id }
+            voice_states << new_state
+        end
     end
 
     # An unavailable guild. Acts as a wrapper for an `id` and `unavailable` field.

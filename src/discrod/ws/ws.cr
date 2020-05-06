@@ -155,7 +155,16 @@ module Discrod::WS
                     when "TYPING_START"
                         @client.fire_typing_start(Packet(TypingStart).from_json(message).payload)
                     when "USER_UPDATE"
+                        user = Packet(User).from_json(message).payload
+                        old_user = @client.user_cache.try &.get(user.id)
+                        @client.user_cache.try &.<<(user)
+                        @client.fire_user_update(user, old_user)
                     when "VOICE_STATE_UPDATE"
+                        voice_state = Packet(VoiceState).from_json(message).payload
+                        guild = voice_state.guild_id.try { |id| @client.guild_cache.try &.get(id) }
+                        old_voice_state = guild.voice_state_of(voice_state.user_id)
+                        old_voice_state.try { |old_state| guild.try &.update_voice_state_of(old_state, voice_state) }
+                        @client.fire_voice_state_update(voice_state, old_voice_state)
                     when "VOICE_SERVER_UPDATE"
                     when "WEBHOOKS_UPDATE"
                     else

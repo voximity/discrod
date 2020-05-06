@@ -184,4 +184,14 @@ module Discrod::WS::Events
     #
     # https://discord.com/developers/docs/topics/gateway#typing-start
     event typing_start, TypingStart
+
+    # This event is fired when properties of a User change.
+    #
+    # https://discord.com/developers/docs/topics/gateway#user-update
+    event user_update, User, User?
+
+    # This event is fired when a user's voice state changes.
+    #
+    # https://discord.com/developers/docs/topics/gateway#voice-state-update
+    event voice_state_update, VoiceState, VoiceState?
 end
