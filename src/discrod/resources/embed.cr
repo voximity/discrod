@@ -101,8 +101,8 @@ module Discrod::Resources
                     raise EmbedLimitException.new "One of Embed fields exceeds value character limit of #{EMBED_FIELD_VALUE_MAX}" unless (0..EMBED_FIELD_VALUE_MAX).includes?(field.value.size)
                 end
             end
-            @footer.try { |footer| raise EmbedLimitException.new "Embed footer field 'text' exceeds character limit of #{EMBED_FOOTER_MAX}" unless (0..EMBED_FOOTER_MAX).includes?(footer.text) }
-            @author.try { |author| raise EmbedLimitException.new "Embed author field 'name' exceeds character limit of #{EMBED_AUTHOR_MAX}" unless (0..EMBED_AUTHOR_MAX).includes?(author.name) }
+            @footer.try { |footer| raise EmbedLimitException.new "Embed footer field 'text' exceeds character limit of #{EMBED_FOOTER_MAX}" unless (0..EMBED_FOOTER_MAX).includes?(footer.text.size) }
+            @author.try { |author| raise EmbedLimitException.new "Embed author field 'name' exceeds character limit of #{EMBED_AUTHOR_MAX}" unless (0..EMBED_AUTHOR_MAX).includes?(author.name.size) }
 
             Embed.new(
                 title: @title,
