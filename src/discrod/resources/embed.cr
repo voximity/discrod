@@ -92,15 +92,17 @@ module Discrod::Resources
 
         def build
             # These enforcements are made as per https://discordapp.com/developers/docs/resources/channel#embed-limits
-            raise EmbedLimitException.new "Embed field 'title' exceeds character limit of #{EMBED_TITLE_MAX}" unless @title.nil? || (0..EMBED_TITLE_MAX).includes?(@title.size)
-            raise EmbedLimitException.new "Embed field 'description' exceeds character limit of #{EMBED_DESCRIPTION_MAX}" unless @description.nil? || (0..EMBED_DESCRIPTION_MAX).includes?(@description.size)
-            raise EmbedLimitException.new "Number of Embed fields exceed limit of #{EMBED_FIELD_MAX}" unless @fields.nil? || (0..EMBED_FIELD_MAX).includes?(@fields.size)
-            @fields.try &.each do |field|
-                raise EmbedLimitException.new "One of Embed fields exceeds name character limit of #{EMBED_FIELD_NAME_MAX}" unless (0..EMBED_FIELD_NAME_MAX).includes?(field.name.size)
-                raise EmbedLimitException.new "One of Embed fields exceeds value character limit of #{EMBED_FIELD_VALUE_MAX}" unless (0..EMBED_FIELD_VALUE_MAX).includes?(field.value.size)
+            @title.try { |title| raise EmbedLimitException.new "Embed field 'title' exceeds character limit of #{EMBED_TITLE_MAX}" unless (0..EMBED_TITLE_MAX).includes?(title.size) }
+            @description.try { |description| raise EmbedLimitException.new "Embed field 'description' exceeds character limit of #{EMBED_DESCRIPTION_MAX}" unless (0..EMBED_DESCRIPTION_MAX).includes?(description.size) }
+            @fields.try do |fields|
+                raise EmbedLimitException.new "Number of Embed fields exceed limit of #{EMBED_FIELD_MAX}" unless (0..EMBED_FIELD_MAX).includes?(fields.size)
+                fields.each do |field|
+                    raise EmbedLimitException.new "One of Embed fields exceeds name character limit of #{EMBED_FIELD_NAME_MAX}" unless (0..EMBED_FIELD_NAME_MAX).includes?(field.name.size)
+                    raise EmbedLimitException.new "One of Embed fields exceeds value character limit of #{EMBED_FIELD_VALUE_MAX}" unless (0..EMBED_FIELD_VALUE_MAX).includes?(field.value.size)
+                end
             end
-            raise EmbedLimitException.new "Embed footer field 'text' exceeds character limit of #{EMBED_FOOTER_MAX}" unless @footer.nil? || (0..EMBED_FOOTER_MAX).includes?(@footer.text)
-            raise EmbedLimitException.new "Embed author field 'name' exceeds character limit of #{EMBED_AUTHOR_MAX}" unless @author.nil? || (0..EMBED_AUTHOR_MAX).includes?(@author.name)
+            @footer.try { |footer| raise EmbedLimitException.new "Embed footer field 'text' exceeds character limit of #{EMBED_FOOTER_MAX}" unless (0..EMBED_FOOTER_MAX).includes?(footer.text) }
+            @author.try { |author| raise EmbedLimitException.new "Embed author field 'name' exceeds character limit of #{EMBED_AUTHOR_MAX}" unless (0..EMBED_AUTHOR_MAX).includes?(author.name) }
 
             Embed.new(
                 title: @title,
