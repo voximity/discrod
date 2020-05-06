@@ -87,4 +87,47 @@ module Discrod::Resources
             client.guild_cache!.get!(guild_id.not_nil!)
         end
     end
+
+    struct ReactionRemoveEmojiEvent
+        include JSON::Serializable
+
+        getter channel_id : Snowflake
+        getter message_id : Snowflake
+        getter guild_id : Snowflake?
+        getter member : Member?
+        @emoji : PartialEmoji
+
+        def emoji
+            @emoji.emoji
+        end
+
+        def channel(client : Client? = nil)
+            client ||= Discrod.client
+            client.channel_cache!.get!(channel_id)
+        end
+
+        def guild(client : Client? = nil)
+            client ||= Discrod.client
+            client.guild_cache!.get!(guild_id.not_nil!)
+        end
+    end
+
+    struct TypingStart
+        include JSON::Serializable
+
+        getter channel_id : Snowflake
+        getter guild_id : Snowflake
+        getter user_id : Snowflake
+        @[JSON::Field(converter: Time::EpochConverter)]
+        getter timestamp : Time
+        getter member : Member?
+
+        def channel(client : Client? = nil)
+            (client || Discrod.client).channel_cache!.get!(channel_id)
+        end
+
+        def guild(client : Client? = nil)
+            (client || Discrod.client).guild_cache!.get!(guild_id.not_nil!)
+        end
+    end
 end

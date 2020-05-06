@@ -25,7 +25,7 @@ module Discrod::WS
         @session_id : String? = nil
         
         @should_resume = false
-        @should_reconnect = true
+        property should_reconnect = true
 
         def initialize(@client : Client)
             @web_socket = HTTP::WebSocket.new(@client.gateway, "/?encoding=json&v=#{DISCORD_API_VERSION}", tls: true,
@@ -149,8 +149,11 @@ module Discrod::WS
                         channel = @client.channel_cache.try &.get(deletion.channel_id)
                         @client.fire_message_reaction_remove_all(deletion.message_id, channel, guild)
                     when "MESSAGE_REACTION_REMOVE_EMOJI"
+                        @client.fire_message_reaction_remove_emoji(Packet(ReactionRemoveEmojiEvent).from_json(message).payload)
                     when "PRESENCE_UPDATE"
+                        @client.fire_presence_update(Packet(PresenceUpdate).from_json(message).payload)
                     when "TYPING_START"
+                        @client.fire_typing_start(Packet(TypingStart).from_json(message).payload)
                     when "USER_UPDATE"
                     when "VOICE_STATE_UPDATE"
                     when "VOICE_SERVER_UPDATE"
@@ -181,6 +184,7 @@ module Discrod::WS
 
             @web_socket.on_close do |code, a|
                 Discrod.log.warn { "Gateway closed with code #{GatewayClose.new(code.value)}." }
+                next unless @should_reconnect
                 case GatewayClose.new(code.value)
                 when GatewayClose::UnknownError
                     reconnect
@@ -202,6 +206,10 @@ module Discrod::WS
             @should_resume = should_resume
             @heartbeat_acknowledged = true
             run
+        end
+
+        def close
+            @web_socket.close
         end
 
         def run

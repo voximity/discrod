@@ -1,8 +1,24 @@
 module Discrod
     abstract class Cache(T)
         getter map : Hash(Snowflake, T) = Hash(Snowflake, T).new
+        getter clear_fiber : Fiber?
+        property client_dead : Bool = false
 
         abstract def resolve(id : Snowflake) : T?
+
+        def clear
+            @map = map.clear
+        end
+
+        def clear_periodic(span : Time::Span)
+            clear_fiber = spawn do
+                loop do
+                    sleep span
+                    break if @client_dead
+                    clear
+                end
+            end
+        end
 
         def get(id : Snowflake) : T?
             map[id]? || resolve(id)

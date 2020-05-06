@@ -1,3 +1,4 @@
+require "base64"
 require "http"
 require "http/status"
 require "http/web_socket"
@@ -37,6 +38,7 @@ module Discrod
     include Discrod::Resources
 end
 
+require "./discrod/resources/activity.cr"
 require "./discrod/resources/channel.cr"
 require "./discrod/resources/embed.cr"
 require "./discrod/resources/emoji.cr"
@@ -47,6 +49,13 @@ require "./discrod/resources/message.cr"
 require "./discrod/resources/role.cr"
 require "./discrod/resources/user.cr"
 
+require "./discrod/rest/channel.cr"
+require "./discrod/rest/emoji.cr"
+require "./discrod/rest/guild.cr"
+require "./discrod/rest/rest.cr"
+require "./discrod/rest/user.cr"
+
+require "./discrod/ws/events.cr"
 require "./discrod/ws/intents.cr"
 require "./discrod/ws/packet.cr"
 require "./discrod/ws/payloads.cr"

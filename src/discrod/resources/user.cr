@@ -22,6 +22,16 @@ module Discrod::Resources
         Nitro
     end
 
+    enum ActivityType
+        Game = 0
+        Streaming = 1
+        Listening = 2
+
+        # watching? missing a 3
+
+        Custom = 4
+    end
+
     class User
         include JSON::Serializable
 

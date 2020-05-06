@@ -98,8 +98,8 @@ module Discrod::Resources
         getter premium_subscription_count : Int32?
         getter preferred_locale : String?
         getter public_updates_channel_id : Snowflake?
-        getter approximate_member_count : Int32?
-        getter approximate_presence_count : Int32?
+        getter approximate_member_count : UInt32?
+        getter approximate_presence_count : UInt32?
     end
 
     # An unavailable guild. Acts as a wrapper for an `id` and `unavailable` field.
@@ -108,5 +108,21 @@ module Discrod::Resources
 
         getter id : Snowflake
         getter unavailable : Bool?
+    end
+
+    # A guild preview. Only available for public guilds.
+    class GuildPreview
+        include JSON::Serializable
+
+        getter id : Snowflake
+        getter name : String
+        getter icon : String?
+        getter splash : String?
+        getter discovery_splash : String?
+        getter emojis : Array(GuildEmoji)?
+        getter features : Array(String)?
+        getter approximate_member_count : UInt32?
+        getter approximate_presence_count : UInt32?
+        getter description : String?
     end
 end

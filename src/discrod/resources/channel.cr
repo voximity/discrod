@@ -48,6 +48,91 @@ module Discrod::Resources
         end
     end
 
+    # `MessageChannel` is a set of common endpoints between channels in which messages are sent.
+    # This is intended to unify guild text channels and DM channels with common endpoints.
+    # Meanwhile, `TextChannel` inherits `GuildChannel`, while `DirectMessageChannel` inherits `Channel`.
+    # Therefore, any two classes including this module do not share an ancestor with this module.
+    # You must evaluate the type of the channel at runtime.
+    module MessageChannel
+        # Get messages from this channel, given a `message_id` and a `SnowflakeDirection`.
+        #
+        # See `REST::Channel#get_channel_messages`.
+        def get_messages(message_id : Snowflake, direction : SnowflakeDirection, limit : Int32 = 50, client : Client? = nil) : Array(Message)
+            client ||= Discrod.client
+            client.get_channel_messages(id, message_id, direction, limit)
+        end
+
+        # Get a message from this channel, given a `message_id`.
+        #
+        # See `REST::Channel#get_channel_message`.
+        def get_message(message_id : Snowflake, client : Client? = nil)
+            client ||= Discrod.client
+            client.get_channel_message(id, message_id)
+        end
+
+        # Send a message to this channel.
+        #
+        # See `REST::Channel#create_message`.
+        def create_message(
+            content : String? = nil,
+            nonce : String | Int32 | Nil = nil,
+            tts : Bool? = nil,
+            client : Client? = nil,
+            embed : Embed? = nil
+            # payload_json,
+            # allowed_mentions
+        ) : Message
+            client ||= Discrod.client
+            client.create_message(id, content: content, nonce: nonce, tts: tts, embed: embed)
+        end
+
+        # Begin typing in this channel.
+        #
+        # See `REST::Channel#trigger_typing_indicator`.
+        def trigger_typing_indicator(client : Client? = nil)
+            client ||= Discrod.client
+            client.trigger_typing_indicator(id)
+        end
+
+        # Get pinned messages for this channel.
+        #
+        # See `REST::Channel#get_pinned_messages`.
+        def get_pinned_messages(client : Client? = nil)
+            client ||= Discrod.client
+            client.get_pinned_messages(id)
+        end
+
+        # Pin a message to this channel by its ID.
+        #
+        # See `REST::Channel#add_pinned_channel_message`.
+        def pin_message(message_id : Snowflake, client : Client? = nil)
+            client ||= Discrod.client
+            client.add_pinned_channel_message(id, message_id)
+        end
+
+        # Pin a message to this channel.
+        #
+        # See `REST::Channel#add_pinned_channel_message`.
+        def pin_message(message : Message, client : Client? = nil)
+            pin_message(message.id, client)
+        end
+
+        # Unpin a message from this channel by its ID.
+        #
+        # See `REST::Channel#delete_pinned_channel_message`.
+        def unpin_message(message_id : Snowflake, client : Client? = nil)
+            client ||= Discrod.client
+            client.delete_pinned_channel_message(id, message_id)
+        end
+
+        # Unpin a message from this channel.
+        #
+        # See `REST::Channel#delete_pinned_channel_message`.
+        def unpin_message(message : Message, client : Client? = nil)
+            unpin_message(message.id, client)
+        end
+    end
+
     # A channel resource. This type, while not abstract, is used to umbrella other channel types. (See `Discrod::Resources::ChannelType`)
     class Channel
         include JSON::Serializable
@@ -73,41 +158,19 @@ module Discrod::Resources
             client ||= Discrod.client
             client.delete_channel(id)
         end
-
-        # Get messages from this channel, given a `message_id` and a `SnowflakeDirection`.
-        def get_messages(message_id : Snowflake, direction : SnowflakeDirection, limit : Int32 = 50, client : Client? = nil) : Array(Message)
-            client ||= Discrod.client
-            client.get_channel_messages(id, message_id, direction, limit)
-        end
-
-        # Get a message from this channel, given a `message_id`.
-        def get_message(message_id : Snowflake, client : Client? = nil)
-            client ||= Discrod.client
-            client.get_channel_message(id, message_id)
-        end
-
-        # Send a message to this channel.
-        def create_message(
-            content : String? = nil,
-            nonce : String | Int32 | Nil = nil,
-            tts : Bool? = nil,
-            client : Client? = nil,
-            embed : Embed? = nil
-            # payload_json,
-            # allowed_mentions
-        ) : Message
-            client ||= Discrod.client
-            client.create_message(id, content: content, nonce: nonce, tts: tts, embed: embed)
-        end
     end
 
     # A DM channel resource. Automatically discriminated when ordinary channels are deserialized.
     class DirectMessageChannel < Channel
+        include MessageChannel
+
         getter last_message_id : Snowflake
         getter recipients : Array(User)
         getter owner_id : Snowflake?
         getter application_id : Snowflake?
         getter last_pin_timestamp : Time?
+
+        # GDM-specific endpoints are not implemented. are they necessary?
     end
 
     # A guild channel resource. Similar to `Channel`, umbrellas other guild channel types.
@@ -157,6 +220,8 @@ module Discrod::Resources
     
     # A guild text channel. Automatically discriminated when deserialized.
     class TextChannel < GuildChannel
+        include MessageChannel
+
         getter topic : String?
         getter nsfw : Bool
         getter last_message_id : Snowflake?

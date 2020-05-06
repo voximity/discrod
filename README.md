@@ -44,6 +44,14 @@ All endpoints are available in `Client` as low-level API calls with very little 
 For higher-level API calls, each resource has their appropriate methods to help mitigate `Client` usage.
 For example, `Message#delete` is synonymous with `Client#delete_message(channel_id, message_id)`.
 
+### Caches
+
+By default, resource caching is enabled. You can assign a cache to periodically wipe:
+
+```cr
+client.guild_cache!.clear_periodic 1.hour
+```
+
 ## Contributing
 
 1. Fork it (https://github.com/voximity/discrod/fork)
