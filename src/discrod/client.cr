@@ -74,7 +74,7 @@ module Discrod
 
         # Gets the gateway from Discord's API.
         def get_gateway : String
-            payload = GatewayPayload.from_json @route_client.get Route.new "/gateway"
+            payload = WS::GatewayPayload.from_json @route_client.get Route.new "/gateway"
             payload.gateway
         end
 
