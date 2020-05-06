@@ -1,7 +1,4 @@
 module Discrod
-    DISCORD_URL = "discordapp.com"
-    DISCORD_API_VERSION = "v6"
-
     class RouteException < Exception
         def initialize(@status : HTTP::Status)
         end
@@ -63,7 +60,7 @@ module Discrod
             "#{@base}#{@endpoint}"
         end
 
-        def initialize(@endpoint : String, @base : String = "/api/#{DISCORD_API_VERSION}")
+        def initialize(@endpoint : String, @base : String = "/api/v#{DISCORD_API_VERSION}")
         end
 
         def +(node : String)

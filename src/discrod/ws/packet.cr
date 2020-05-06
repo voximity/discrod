@@ -1,6 +1,4 @@
 module Discrod::WS
-    alias GenericPayload = JSON::Any
-
     struct Packet(T)
         include JSON::Serializable
 

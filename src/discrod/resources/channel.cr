@@ -150,7 +150,8 @@ module Discrod::Resources
             overwrite_id : Snowflake | UInt64,
             client : Client? = nil
         )
-
+            client ||= Discrod.client
+            client.delete_channel_permission(id, overwrite_id)
         end
     end
     

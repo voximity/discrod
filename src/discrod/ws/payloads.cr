@@ -1,6 +1,4 @@
 module Discrod::WS
-    GATEWAY = "gateway.discord.gg"
-
     enum Encoding
         Json
         Etf
@@ -56,6 +54,16 @@ module Discrod::WS
             builder.number @shard_id
             builder.number @shard_count
             builder.end_array
+        end
+    end
+
+    struct GatewayPayload
+        include JSON::Serializable
+
+        getter url : String
+
+        def gateway : String
+            URI.parse(url).host.not_nil!
         end
     end
 

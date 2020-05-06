@@ -28,7 +28,7 @@ module Discrod::WS
         @should_reconnect = true
 
         def initialize(@client : Client)
-            @web_socket = HTTP::WebSocket.new(WS::GATEWAY, "/?encoding=json&v=6", tls: true,
+            @web_socket = HTTP::WebSocket.new(@client.gateway, "/?encoding=json&v=#{DISCORD_API_VERSION}", tls: true,
                 headers: HTTP::Headers{"Authorization" => @client.authorization})
             
             @web_socket.on_message do |message|
@@ -234,6 +234,7 @@ module Discrod::WS
 
         def send_heartbeat
             packet = Packet(Int32?).new(Opcode::Heartbeat, d: @last_sequence)
+            @heartbeat_acknowledged = false
             send packet
         end
 

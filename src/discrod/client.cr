@@ -31,18 +31,18 @@ module Discrod
         getter token
         getter token_type
 
-        macro cache(cache_name, cache_type)
-            getter {{cache_name}}_cache : {{cache_type}}?
-            def {{cache_name}}_cache! : {{cache_type}}
+        macro cache(cache_name)
+            getter {{cache_name}}_cache : {{cache_name.capitalize}}Cache?
+            def {{cache_name}}_cache! : {{cache_name.capitalize}}Cache
                 return {{cache_name}}_cache.not_nil! unless {{cache_name}}_cache.nil?
                 raise "no cache exists, making this resolution invalid"
             end
         end
 
-        cache guild, GuildCache
-        cache channel, ChannelCache
-        cache user, UserCache
-        cache role, RoleCache
+        cache guild
+        cache channel
+        cache user
+        cache role
 
         getter route_client : RouteClient
 
@@ -71,6 +71,19 @@ module Discrod
         end
 
         # REST events
+
+        # Gets the gateway from Discord's API.
+        def get_gateway : String
+            payload = GatewayPayload.from_json @route_client.get Route.new "/gateway"
+            payload.gateway
+        end
+
+        @gateway : String? = nil
+
+        # The websocket gateway. Uses cached gateway unless it is not already cached.
+        def gateway : String
+            @gateway ||= get_gateway
+        end
 
         # Gets a guild from Discord's API, skipping the cache. Use the cache to get guilds if you do not wish to request the API.
         def get_guild(id : Snowflake | UInt64) : Guild
