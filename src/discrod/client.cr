@@ -32,8 +32,8 @@ module Discrod
         getter token_type
 
         macro cache(cache_name)
-            getter {{cache_name}}_cache : {{cache_name.capitalize}}Cache?
-            def {{cache_name}}_cache! : {{cache_name.capitalize}}Cache
+            getter {{cache_name}}_cache : {{cache_name.id.capitalize}}Cache?
+            def {{cache_name}}_cache! : {{cache_name.id.capitalize}}Cache
                 return {{cache_name}}_cache.not_nil! unless {{cache_name}}_cache.nil?
                 raise "no cache exists, making this resolution invalid"
             end
