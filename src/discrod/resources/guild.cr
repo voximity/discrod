@@ -87,7 +87,7 @@ module Discrod::Resources
         getter member_count : Int32?
         getter voice_states : Array(VoiceState) = [] of Discrod::VoiceState
         # getter members : Array(Member) = [] of Member
-        getter channels : Array(GuildChannel) = [] of Discrod::GuildChannel
+        getter channels : Array(Discrod::Channel) = [] of Discrod::Channel
         # getter presences : Array(PresenceUpdate) = [] of PresenceUpdate
         getter max_presences : Int32?
         getter max_members : Int32?
