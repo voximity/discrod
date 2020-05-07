@@ -36,8 +36,8 @@ module Discrod::Resources
         include JSON::Serializable
 
         getter id : Snowflake
-        getter username : String
-        getter discriminator : String
+        getter username : String = ""
+        getter discriminator : String = ""
         getter avatar : String?
         getter bot : Bool?
         getter system : Bool?

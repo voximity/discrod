@@ -162,8 +162,10 @@ module Discrod::WS
                     when "VOICE_STATE_UPDATE"
                         voice_state = Packet(VoiceState).from_json(message).payload
                         guild = voice_state.guild_id.try { |id| @client.guild_cache.try &.get(id) }
-                        old_voice_state = guild.voice_state_of(voice_state.user_id)
-                        old_voice_state.try { |old_state| guild.try &.update_voice_state_of(old_state, voice_state) }
+                        old_voice_state = voice_state.user_id.try { |id| guild.try &.voice_state_of(id) }
+                        old_voice_state.try do |old_state|
+                            old_state.user_id.try { |id| guild.try &.update_voice_state_of(id, voice_state) }
+                        end
                         @client.fire_voice_state_update(voice_state, old_voice_state)
                     when "VOICE_SERVER_UPDATE"
                     when "WEBHOOKS_UPDATE"
@@ -189,6 +191,8 @@ module Discrod::WS
                 else
                     puts packet.op
                 end
+            rescue ex
+                Discrod.log.error(exception: ex) { "An error occurred while handling a WS message" }
             end
 
             @web_socket.on_close do |code, a|
