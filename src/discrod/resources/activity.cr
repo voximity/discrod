@@ -1,6 +1,6 @@
 module Discrod::Resources
     @[Flags]
-    enum ActivityFlags
+    enum ActivityFlags : Int64
         Instance = 1 << 0
         Join = 1 << 1
         Spectate = 1 << 2
