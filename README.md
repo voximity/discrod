@@ -49,7 +49,7 @@ For example, `Message#delete` is synonymous with `Client#delete_message(channel_
 By default, resource caching is enabled. You can assign a cache to periodically wipe:
 
 ```cr
-client.guild_cache!.clear_periodic 1.hour
+client.guild_cache!.clear_periodic 1.hours
 ```
 
 ## Contributing

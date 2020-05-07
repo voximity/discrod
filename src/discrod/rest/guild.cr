@@ -1,4 +1,4 @@
-module Discrod::REST::Guild
+module Discrod::REST::GuildEndpoints
     # TODO: add create guild
 
     # Gets a guild from Discord's API, skipping the cache. Use the cache to get guilds if you do not wish to request the API.

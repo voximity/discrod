@@ -1,4 +1,4 @@
-module Discrod::REST::Emoji
+module Discrod::REST::EmojiEndpoints
     # Gets guild emoji from the API.
     #
     # https://discord.com/developers/docs/resources/emoji#get-guild-emoji

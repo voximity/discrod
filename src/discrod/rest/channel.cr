@@ -1,4 +1,4 @@
-module Discrod::REST::Channel
+module Discrod::REST::ChannelEndpoints
     # Gets a channel from Discord's API, skipping the cache. Use the cache to get channels if you do not wish to request the API.
     #
     # https://discordapp.com/developers/docs/resources/channel#get-channel

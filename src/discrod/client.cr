@@ -97,11 +97,11 @@ module Discrod
             @gateway ||= get_gateway
         end
 
-        include REST::Channel
-        include REST::Emoji
-        include REST::Guild
-        include REST::User
-        
+        include REST::ChannelEndpoints
+        include REST::EmojiEndpoints
+        include REST::GuildEndpoints
+        include REST::UserEndpoints
+
         include WS::Events
     end
 end
