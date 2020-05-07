@@ -54,7 +54,7 @@ module Discrod::Resources
         getter application_id : Snowflake?
         getter details : String?
         getter state : String?
-        getter emoji : AbstractEmoji?
+        getter emoji : PartialEmoji?
         getter party : ActivityParty?
         getter assets : ActivityAssets?
         getter secrets : ActivitySecrets?
