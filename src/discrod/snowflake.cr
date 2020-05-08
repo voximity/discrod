@@ -55,5 +55,9 @@ module Discrod
         def to_s
             @value.to_s
         end
+
+        def to_i64
+            @value.to_i64
+        end
     end
 end

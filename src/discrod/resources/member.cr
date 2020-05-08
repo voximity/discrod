@@ -11,6 +11,15 @@ module Discrod::Resources
         getter deaf : Bool
         getter mute : Bool
         getter guild_id : Snowflake?
+
+        def guild(client : Client? = nil)
+            client ||= Discrod.client
+            client.guild_cache!.get!(guild_id.not_nil!)
+        end
+
+        def roles(client : Client? = nil)
+            role_ids.map { |id| guild.roles.find { |role| role.id == id }.not_nil! }.sort { |a, b| a.position <=> b.position }
+        end
     end
 
     class MemberUpdate

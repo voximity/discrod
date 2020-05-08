@@ -21,7 +21,7 @@ module Discrod::Resources
         getter channel_id : Snowflake
         getter guild_id : Snowflake?
         getter author : User?
-        # member
+        getter member : Member?
         getter content : String?
         getter timestamp : Time?
         getter edited_timestamp : Time?
