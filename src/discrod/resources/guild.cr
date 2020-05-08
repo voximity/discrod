@@ -109,6 +109,11 @@ module Discrod::Resources
             voice_states.reject { |state| state.user_id == id }
             voice_states << new_state
         end
+
+        def icon_url : String?
+            return nil if icon.nil?
+            "#{Discrod.CDN}/icons/#{id.to_s}/#{icon}.png"
+        end
     end
 
     # An unavailable guild. Acts as a wrapper for an `id` and `unavailable` field.

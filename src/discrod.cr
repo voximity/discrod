@@ -12,6 +12,7 @@ require "./json_serialization_patch.cr"
 module Discrod
     DISCORD_URL = "discord.com"
     DISCORD_API_VERSION = 6
+    CDN = "https://cdn.discordapp.com"
 
     # This module constitutes classes & structs related to Discord resources.
     # Resources that support method invocation search for a client as set

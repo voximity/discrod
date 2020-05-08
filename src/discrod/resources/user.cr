@@ -50,8 +50,8 @@ module Discrod::Resources
         getter public_Flags : UserFlags?
 
         def avatar_url
-            return "https://cdn.discordapp.com/embed/avatars/#{@discriminator.to_i % 5}.png" if avatar.nil?
-            "https://cdn.discordapp.com/avatars/#{id.to_s}/#{@avatar}.png"
+            return "#{Discrod.CDN}/embed/avatars/#{@discriminator.to_i % 5}.png" if avatar.nil?
+            "#{Discord.CDN}/avatars/#{id.to_s}/#{@avatar}.png"
         end
     end
 end
