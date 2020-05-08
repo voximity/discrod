@@ -29,7 +29,7 @@ module Discrod::Resources
         # todo: finish
 
         def member
-            @member.guild_id = @guild_id unless @member.nil?
+            @member.try { |member| member.guild_id = @guild_id }
             @member
         end
 
