@@ -112,7 +112,7 @@ module Discrod::Resources
 
         def icon_url : String?
             return nil if icon.nil?
-            "#{Discrod.CDN}/icons/#{id.to_s}/#{icon}.png"
+            "#{Discrod::CDN}/icons/#{id.to_s}/#{icon}.png"
         end
     end
 
