@@ -21,12 +21,17 @@ module Discrod::Resources
         getter channel_id : Snowflake
         getter guild_id : Snowflake?
         getter author : User?
-        getter member : Member?
+        @member : Member?
         getter content : String?
         getter timestamp : Time?
         getter edited_timestamp : Time?
         getter embed : Embed?
         # todo: finish
+
+        def member
+            @member.guild_id = @guild_id unless @member.nil?
+            @member
+        end
 
         def channel(client : Client? = nil)
             client ||= Discrod.client

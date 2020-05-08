@@ -12,6 +12,10 @@ module Discrod::Resources
         getter mute : Bool
         getter guild_id : Snowflake?
 
+        protected def guild_id=(id : Snowflake?)
+            @guild_id = id
+        end
+
         def guild(client : Client? = nil)
             client ||= Discrod.client
             client.guild_cache!.get!(guild_id.not_nil!)
