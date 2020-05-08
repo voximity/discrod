@@ -136,6 +136,7 @@ module Discrod::Resources
     # A channel resource. This type, while not abstract, is used to umbrella other channel types. (See `Discrod::Resources::ChannelType`)
     class Channel
         include JSON::Serializable
+        include MessageChannel # i hate this. i hate everything about this. i hate this so much.
 
         use_json_discriminator "type", {
             ChannelType::GuildText => TextChannel,
@@ -162,8 +163,6 @@ module Discrod::Resources
 
     # A DM channel resource. Automatically discriminated when ordinary channels are deserialized.
     class DirectMessageChannel < Channel
-        include MessageChannel
-
         getter last_message_id : Snowflake
         getter recipients : Array(User)
         getter owner_id : Snowflake?
@@ -220,8 +219,6 @@ module Discrod::Resources
     
     # A guild text channel. Automatically discriminated when deserialized.
     class TextChannel < GuildChannel
-        include MessageChannel
-
         getter topic : String?
         getter nsfw : Bool
         getter last_message_id : Snowflake?
