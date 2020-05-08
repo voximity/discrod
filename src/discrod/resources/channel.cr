@@ -181,7 +181,7 @@ module Discrod::Resources
 
         def guild(client : Client? = nil)
             client ||= Discrod.client
-            client.guild_cache!.get!(guild_id)
+            client.guild_cache!.get!(guild_id.not_nil!)
         end
 
         def edit_permissions(

@@ -47,6 +47,14 @@ module Discrod
         getter route_client : RouteClient
         getter dead : Bool = false
 
+        @current_user : User?
+        def current_user
+            @current_user.not_nil!
+        end
+        protected def current_user=(user : User)
+            @current_user = user
+        end
+
         # Instantiate a client.
         def initialize(@token : String = "", @token_type : TokenType = TokenType::Bot, use_cache : Bool = true)
             @route_client = RouteClient.new("#{@token_type.to_s} #{@token}")

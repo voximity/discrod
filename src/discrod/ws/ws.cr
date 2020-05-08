@@ -42,8 +42,8 @@ module Discrod::WS
                         payload = Packet(ReadyPayload).from_json(message).payload
                         @session_id = payload.session_id
                         resume if @should_resume
+                        @client.current_user = payload.user
                         @client.fire_ready
-
                     when "CHANNEL_CREATE"
                         channel = Packet(Channel).from_json(message).payload
                         @client.channel_cache.try &.<<(channel)
@@ -155,9 +155,7 @@ module Discrod::WS
                     when "TYPING_START"
                         @client.fire_typing_start(Packet(TypingStart).from_json(message).payload)
                     when "USER_UPDATE"
-                        user = Packet(User).from_json(message).payload
-                        old_user = @client.user_cache.try &.get(user.id)
-                        @client.user_cache.try &.<<(user)
+                        @client.current_user = Packet(User).from_json(message).payload
                         @client.fire_user_update(user, old_user)
                     when "VOICE_STATE_UPDATE"
                         voice_state = Packet(VoiceState).from_json(message).payload
