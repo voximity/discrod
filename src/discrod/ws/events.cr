@@ -188,7 +188,7 @@ module Discrod::WS::Events
     # This event is fired when properties of a User change.
     #
     # https://discord.com/developers/docs/topics/gateway#user-update
-    event user_update, User, User?
+    event user_update, User
 
     # This event is fired when a user's voice state changes.
     #

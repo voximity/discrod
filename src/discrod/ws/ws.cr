@@ -156,7 +156,7 @@ module Discrod::WS
                         @client.fire_typing_start(Packet(TypingStart).from_json(message).payload)
                     when "USER_UPDATE"
                         @client.current_user = Packet(User).from_json(message).payload
-                        @client.fire_user_update(user, old_user)
+                        @client.fire_user_update(@client.current_user)
                     when "VOICE_STATE_UPDATE"
                         voice_state = Packet(VoiceState).from_json(message).payload
                         guild = voice_state.guild_id.try { |id| @client.guild_cache.try &.get(id) }
