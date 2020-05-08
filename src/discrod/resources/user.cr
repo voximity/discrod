@@ -51,7 +51,7 @@ module Discrod::Resources
 
         def avatar_url
             return "#{Discrod::CDN}/embed/avatars/#{@discriminator.to_i % 5}.png" if avatar.nil?
-            "#{Discord::CDN}/avatars/#{id.to_s}/#{@avatar}.png"
+            "#{Discrod::CDN}/avatars/#{id.to_s}/#{@avatar}.png"
         end
     end
 end
